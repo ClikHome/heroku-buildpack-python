@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+set -e
+
+source $BIN_DIR/utils
+
+if [[ ! -f ${BUILD_DIR}/init_script/heroku_deploy.py ]]; then
+  puts-cmd "-----> ${BUILD_DIR}/init_script/heroku_deploy.py not found!"
+  exit 0
+fi
+
+puts-cmd "python ${BUILD_DIR}/init_script/heroku_deploy.py"
+python ${BUILD_DIR}/init_script/heroku_deploy.py | indent
+
+if ! [ $? ]; then
+    echo "init_script/heroku_deploy.py FAILED" | indent
+    exit 1
+fi
+
+echo "init_script/heroku_deploy.py finished successfully" | indent
