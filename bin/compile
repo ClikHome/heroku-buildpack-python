@@ -123,11 +123,6 @@ export PKG_CONFIG_PATH=/app/.heroku/vendor/lib/pkg-config:$BUILD_DIR/.heroku/ven
 # Switch to the repo's context.
 cd $BUILD_DIR
 
-# Experimental pre_compile hook.
-# bpwatch start pre_compile
-#   source $BIN_DIR/nhooks/pre_compile
-# bpwatch stop pre_compile
-
 # If no requirements.txt file given, assume `setup.py develop` is intended.
 if [ ! -f requirements.txt ]; then
   echo "-e ." > requirements.txt
@@ -186,6 +181,12 @@ if [[ ! -f $ENV_DIR/HEROKU_APP_NAME ]]; then
   exit 1
 fi
 
+# Experimental pre_compile hook.
+bpwatch start pre_compile
+  # Run some script from app repository
+  sub-env $BIN_DIR/steps/hooks/pre_compile
+bpwatch stop pre_compile
+
 # Install Python.
 source $BIN_DIR/steps/python
 
@@ -212,10 +213,6 @@ source $BIN_DIR/steps/gdal
 
 # Install dependencies with Pip.
 source $BIN_DIR/steps/pip-install
-
-# Run script from app repository
-chmod +x $BIN_DIR/steps/run-app-script
-sub-env $BIN_DIR/steps/run-app-script
 
 # Django collectstatic support.
 sub-env $BIN_DIR/steps/collectstatic

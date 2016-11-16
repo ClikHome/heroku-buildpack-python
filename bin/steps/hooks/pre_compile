@@ -1,7 +1,19 @@
 #!/usr/bin/env bash
+set -e
+source $BIN_DIR/utils
 
-if [ -f bin/pre_compile ]; then
-    echo "-----> Running pre-compile hook"
-    chmod +x bin/pre_compile
-    sub-env bin/pre_compile
+if [[ ! -f ${BUILD_DIR}/init_script/heroku_pre_compile.py ]]; then
+  puts-cmd "-----> ${BUILD_DIR}/init_script/heroku_pre_compile.py not found!"
+  exit 0
 fi
+
+chmod +x $BUILD_DIR/init_script/heroku_pre_compile.py
+puts-cmd "-----> Running ${BUILD_DIR}/init_script/heroku_pre_compile.py"
+python $BUILD_DIR/init_script/heroku_pre_compile.py | indent
+
+if ! [ $? ]; then
+    puts-cmd "-----> init_script/heroku_pre_compile.py FAILED"
+    exit 1
+fi
+
+puts-cmd "-----> init_script/heroku_pre_compile.py finished successfully"
