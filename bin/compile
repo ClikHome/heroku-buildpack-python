@@ -175,9 +175,8 @@ set -e
 mkdir -p $(dirname $PROFILE_PATH)
 
 # Missing runtime-dyno-metadata
-if [[ ! -f $ENV_DIR/HEROKU_APP_NAME ]]; then
-  puts-warn 'Error: you need enabme runtime-dyno-metadata'
-  puts-warn 'Learn more: https://devcenter.heroku.com/articles/dyno-metadata'
+if [[ ! -f $ENV_DIR/DJANGO_SETTINGS_MODULE ]]; then
+  puts-warn 'Error: you need define DJANGO_SETTINGS_MODULE'
   exit 1
 fi
 
